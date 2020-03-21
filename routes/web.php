@@ -21,3 +21,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/','HomeController@index')->name('home');
 Route::resource('item','ItemController');
 Route::get('success/{id}','ItemController@success')->name('item.success');
+Route::get('search','HomeController@search')->name('search');
+Route::get('search/refine','HomeController@refine')->name('refine-search');
+Route::get('deactivate','ItemController@destroy')->name('deactivate');

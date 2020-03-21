@@ -7,6 +7,7 @@ use App\Item;
 use Illuminate\Http\Request;
 
 use AWS;
+use Spatie\Geocoder\Geocoder;
 
 class ItemController extends Controller
 {
@@ -43,6 +44,7 @@ class ItemController extends Controller
     {
         
         //
+
         $request->validate([
 	    	'person_name' => 'required',
 	    	'phone_number' => 'required',
@@ -61,12 +63,26 @@ class ItemController extends Controller
 
         ]);
 
-     
+        $client = new \GuzzleHttp\Client();
+        $geocoder = new Geocoder($client);
+         
+
+        $geocoder->setApiKey(config('geocoder.key'));
+
+        $geocoder->setCountry(config('geocoder.country', 'UK'));
+        
+        $latlongs = $geocoder->getCoordinatesForAddress($request->postcode);
+
+        if($latlongs['accuracy'] == "result_not_found" )
+        {
+            return back()->withInput()->withErrors(['postcode.required', 'Please enter a valid UK Postcode']);
+        }
 
         $item = Item::create($request->all());
 
-    
-
+        $item->lat = $latlongs['lat'];
+        $item->lon = $latlongs['lng'];
+        $item->save();
 
         return redirect()->route('item.success',$item->id)->with('successmessage','Great! Your item is now available to see in the front end');
 
@@ -78,7 +94,7 @@ class ItemController extends Controller
         
         $item = Item::findOrFail($id);
         
-        $this->sendSMS($item->phone_number);
+       // $this->sendSMS($item->phone_number);
 
         return view('frontend.success');
     }
