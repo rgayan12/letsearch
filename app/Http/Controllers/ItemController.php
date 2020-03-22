@@ -111,6 +111,16 @@ class ItemController extends Controller
     }
 
 
+    public function deactivated($id)
+    {
+        if(Session::has('deactivatemessage'))
+        {
+          return view('frontend.success');
+        }
+        else
+        return redirect()->route('home');
+    
+    }
     protected function sendSMS($phone_number, $deactivateurl){
         $sms = AWS::createClient('sns');
 	
@@ -179,7 +189,7 @@ class ItemController extends Controller
         $item->is_active = 0;
         $item->save();
 
-        return redirect()->route('item.success',$item->id)->with('deactivatemessage','Thank you!');
+        return redirect()->route('item.deactivated',$item->id)->with('deactivatemessage','Thank you!');
 
     }
 }
