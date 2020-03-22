@@ -7,6 +7,7 @@ use App\Item;
 use Illuminate\Http\Request;
 
 use AWS;
+use Session;
 use Spatie\Geocoder\Geocoder;
 
 class ItemController extends Controller
@@ -47,7 +48,7 @@ class ItemController extends Controller
 
         $request->validate([
 	    	'person_name' => 'required',
-	    	'phone_number' => 'required',
+	    	'phone_number' => 'required|max:11|phone:GB,mobile,fixed_line',
 	    	'postcode' => 'required',
             'sharing_product' => 'required',
             'return_expected' => 'required',
@@ -74,8 +75,8 @@ class ItemController extends Controller
         $latlongs = $geocoder->getCoordinatesForAddress($request->postcode);
 
         if($latlongs['accuracy'] == "result_not_found" )
-        {
-            return back()->withInput()->withErrors(['postcode.required', 'Please enter a valid UK Postcode']);
+        {  
+            return redirect()->back()->withInput()->with('postcodeerror','Please enter a valid UK Postcode');
         }
 
         $item = Item::create($request->all());
@@ -84,7 +85,7 @@ class ItemController extends Controller
         $item->lon = $latlongs['lng'];
         $item->save();
 
-        return redirect()->route('item.success',$item->id)->with('successmessage','Great! Your item is now available to see in the front end');
+        return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
 
         
     }
@@ -92,19 +93,29 @@ class ItemController extends Controller
     public function success($id)
     {
         
+        if(Session::has('successmessage') || Session::has('deactivatemessage'))
+        {
         $item = Item::findOrFail($id);
         
-       // $this->sendSMS($item->phone_number);
+        $deactivateurl = $item->DeactivateUrl;
+            
+        $phone_number = '0044'.$item->SanitizedPhone;
+        
+      
+        $this->sendSMS($phone_number, $deactivateurl);
 
         return view('frontend.success');
+        }
+        else
+        return redirect()->route('home');
     }
 
 
-    protected function sendSMS($phone_number){
+    protected function sendSMS($phone_number, $deactivateurl){
         $sms = AWS::createClient('sns');
 	
         $sms->publish([
-                'Message' => 'Hello, your item is now published. Please click the link below when you complete the share to remove from the site https://www.google.com',
+                'Message' => 'Hello, your item is now published. Please click the link below when you complete the share to remove from the site '. $deactivateurl,
                 'PhoneNumber' => $phone_number,	
                 'MessageAttributes' => [
                     'AWS.SNS.SMS.SMSType'  => [
@@ -160,8 +171,15 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        $itemid = $request->input('item');
+        $item = Item::findOrFail($itemid);
+        $item->is_active = 0;
+        $item->save();
+
+        return redirect()->route('item.success',$item->id)->with('deactivatemessage','Thank you!');
+
     }
 }

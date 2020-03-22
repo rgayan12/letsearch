@@ -5,11 +5,11 @@
     <h1 class="heading-text">I'm looking for</h1>
      <form action="{{route('search')}}" method="GET">
             <div class="row mt-2">
-                <div class="col-md-8 p-0">
-                 <input class="form-control form-control-lg" name="search" type="text" placeholder="What you really really want? bread, a new movie to watch">
+                <div class="col-md-8 p-md-0 p-lg-0 mb-2">
+                 <input class="form-control form-control-lg" name="search" type="text" placeholder="What you really really want? toilet roll, a new movie to watch">
                 </div>
-                <div class="col-md-4 p-0 pl-1">
-                    <select class="ml-1 form-control custom-select-lg" id="select_category" name="category">
+                <div class="col-md-4 p-md-0 p-lg-0">
+                    <select class="ml-md-1 form-control custom-select-lg" id="select_category" name="category">
                     <option value="" selected>Category</option>
                     @foreach($categories as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -38,7 +38,7 @@
 
     <div class="col-12">
         @foreach($categories as $category)
-        <h2 class="sub-heading mt-4">{{ $category->name }}</h2>
+        <h2 class="sub-heading mt-4"><u>{{ $category->name }}</u></h2>
 
         <div class="row">
             @foreach($category->items as $item)
@@ -46,12 +46,23 @@
             <div class="card">
             
             <div class="card-body">
-                <h5 class="card-title"><strong>{{ $item->person_name }}</strong></h5>
-                <h5 class="card-title"><strong>can share : </strong> {{ $item->sharing_product }}</h5>
-                <h5 class="card-title"><strong>for: </strong> {{ $item->asking_product }}</h5>
+            <h5 class="card-title"><strong>{{ $item->person_name ?? '' }}</strong></h5>
+                <h5 class="card-title"><strong>Like to share </strong></h5>
+                <p class="card-text">{{ $item->sharing_product ?? '' }}</p>
+                <h5 class="card-title"><strong>Like to have</strong></h5>
+                <p class="card-text"> {{ $item->updatedAskingProduct ?? '' }}</p>
+                <h5 class="card-title"><strong>Location : </strong> {{ $item->SanitizedPostCode ?? '' }}</h5>
 
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-outline-info">Reveal Contact Number</a>
+                 
+           <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseExample{{$item->id}}" aria-expanded="false" aria-controls="collapseExample{{$item->id}}">
+           Reveal Contact Number
+            </button>
+
+
+                <div class="collapse" id="collapseExample{{$item->id}}">
+                <h5 class="card-title mt-2"> {{ $item->phone_number ?? '' }} </h5>
+                </div>
+
             </div>
             </div>
             </div>
@@ -70,7 +81,7 @@
 </div>
 
 
-
+@include('frontend.footer')
 
 
 

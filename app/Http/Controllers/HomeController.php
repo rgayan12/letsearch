@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Item;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\Geocoder\Geocoder;
 
@@ -17,7 +18,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $categories = Category::whereHas('items')->get();
+        $categories = Category::whereHas('items', function (Builder $query){
+            $query->where('is_active',1);
+        })->get();
          
         return view('frontend.index',compact('categories'));
         //
@@ -60,9 +63,9 @@ class HomeController extends Controller
                            sin( radians( lat ) ) )
                          ) AS distance', [$lat, $lon, $lat])
         ->havingRaw("distance < ?", [$radius])
+        ->where('is_active', 1)
         ->get();
 
-        
  
         return view('frontend.results',compact('items'));
 
@@ -71,6 +74,16 @@ class HomeController extends Controller
     
     }
 
+    public function howitworks(){
+        return view('frontend.howitworksmain');
+    }
+    public function terms(){
+        return view('frontend.terms');
+    }
+
+    public function contact(){
+        return view('frontend.contact');
+    }
     /**
      * Show the form for creating a new resource.
      *

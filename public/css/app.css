@@ -35,3 +35,54 @@ ul.pagination li {
     border-color: transparent !important;
   }
   
+.heading-text{
+  font-size: 3rem;
+  font-weight: 900;
+}
+
+.blue-text{
+  color: #007bff;
+}
+
+
+
+.footer-bottom {
+  position: relative;
+  background: #363839;
+  padding: 25px 0;
+}
+
+@media (max-width: 480px) {
+  .footer-bottom {
+    text-align: center;
+  }
+}
+
+.footer-bottom .copyright p {
+  color: #c7c7c7;
+  margin-bottom: 0;
+}
+
+.social-media-icons {
+  text-align: center ;
+}
+
+.social-media-icons li {
+  display: inline-block;
+}
+
+.social-media-icons li a {
+  color: #848484;
+  padding: 0 10px;
+}
+
+.social-media-icons li a:hover {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+@media(max-width: 500px){
+  .social-media-icons{
+
+  }
+}
