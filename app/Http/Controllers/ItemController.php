@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Item;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 use AWS;
 use Session;
@@ -30,11 +31,21 @@ class ItemController extends Controller
     public function create()
     {
         $categories = Category::pluck('name','id');
-         
-        return view('frontend.create',compact('categories'));
+        $item_type = 2; 
+
+        return view('frontend.create',compact('categories','item_type'));
         //
     }
 
+    public function createItemRequest(){
+
+        //get all the categories
+        $categories = Category::whereIn('id',[1,2,3,4,8,9,10,11,12])->pluck('name','id');
+        
+        $item_type = 1; 
+
+        return view('frontend.createrequest',compact('categories','item_type'));
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -64,25 +75,23 @@ class ItemController extends Controller
 
         ]);
 
-        $client = new \GuzzleHttp\Client();
-        $geocoder = new Geocoder($client);
-         
+     
 
-        $geocoder->setApiKey(config('geocoder.key'));
-
-        $geocoder->setCountry(config('geocoder.country', 'UK'));
+        $item = Item::create($request->all());
         
-        $latlongs = $geocoder->getCoordinatesForAddress($request->postcode);
+        $latlongs = $this->locate($item->postcode);
+
 
         if($latlongs['accuracy'] == "result_not_found" )
         {  
             return redirect()->back()->withInput()->with('postcodeerror','Please enter a valid UK Postcode');
         }
-
-        $item = Item::create($request->all());
+        
 
         $item->lat = $latlongs['lat'];
         $item->lon = $latlongs['lng'];
+        $item->item_type_id = 2;
+
         $item->save();
 
         return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
@@ -90,10 +99,75 @@ class ItemController extends Controller
         
     }
 
+
+    public function storeRequestItem(Request $request)
+    {
+        
+        //
+
+        $request->validate([
+	    	'person_name' => 'required',
+	    	'phone_number' => 'required|max:11|phone:GB,mobile,fixed_line',
+	    	'postcode' => 'required',
+            'asking_product' => 'required',
+            'can_afford' => 'required',
+            'category_id' => 'required',
+        ],
+        [   
+            'person_name.required' => 'Please enter your name to continue',
+            'phone_number.required' => 'Please enter a valid UK phone number',
+            'postcode.required' => 'Please enter a valid postcode',
+            'asking_product.required' => 'You must want to ask for something?',
+            'can_afford.required' => 'Please let us know if you can afford to pay',
+            'category_id.required' => 'Category is a required field',
+
+        ]);
+
+     
+
+        $item = Item::create($request->all());
+        
+        $latlongs = $this->locate($item->postcode);
+
+        if($latlongs['accuracy'] == "result_not_found" )
+        {  
+            return redirect()->back()->withInput()->with('postcodeerror','Please enter a valid UK Postcode');
+        }
+        
+
+        $item->lat = $latlongs['lat'];
+        $item->lon = $latlongs['lng'];
+        $item->item_type_id = 1;
+        $item->save();
+
+        return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
+
+        
+    }
+
+
+
+
+    public function locate($postcode){
+
+        $client = new \GuzzleHttp\Client();
+        $geocoder = new Geocoder($client);
+
+        $geocoder->setApiKey(config('geocoder.key'));
+
+        $geocoder->setCountry(config('geocoder.country', 'UK'));
+        
+        $latlongs = $geocoder->getCoordinatesForAddress($postcode);
+
+        return $latlongs;
+    
+
+    }
+
     public function success($id)
     {
         
-        if(Session::has('successmessage') || Session::has('deactivatemessage'))
+        if(Session::has('successmessage'))
         {
         $item = Item::findOrFail($id);
         
@@ -101,11 +175,12 @@ class ItemController extends Controller
             
         $phone_number = '0044'.$item->SanitizedPhone;
         
-      
+        
         $this->sendSMS($phone_number, $deactivateurl);
 
         return view('frontend.success');
         }
+        
         else
         return redirect()->route('home');
     }

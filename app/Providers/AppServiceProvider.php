@@ -25,10 +25,10 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         
-        //if(config('app.env') === 'production') {
+        if(config('app.env') === 'production') {
              $this->app['request']->server->set('HTTPS', true);
 
-        //}
+        }
 
     }
 }

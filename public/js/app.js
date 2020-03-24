@@ -1,8 +1,10 @@
 function goToURL() {
     location.href = '/item/create';
-
 }
 
+function goToCreateRequestURL(){
+  location.href = '/item/request/create';
+}
 
 $(function() {
 

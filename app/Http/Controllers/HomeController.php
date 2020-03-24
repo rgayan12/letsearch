@@ -7,7 +7,9 @@ use App\Item;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\Geocoder\Geocoder;
-
+use Session;
+use App\Mail\ContactUsMail;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -18,11 +20,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $categories = Category::whereHas('items', function (Builder $query){
+        $sharecategories = Category::whereHas('items', function (Builder $query){
+            $query->where('is_active',1);
+            $query->where('item_type_id', 1);
+        })->get();
+
+        $requestcategories = Category::whereHas('items', function (Builder $query){
+            $query->where('is_active',1);
+            $query->where('item_type_id', 1);
+        })->get();
+
+        $allcategories = Category::whereHas('items', function (Builder $query){
             $query->where('is_active',1);
         })->get();
-         
-        return view('frontend.index',compact('categories'));
+
+
+        return view('frontend.index',compact('sharecategories','requestcategories','allcategories'));
         //
     }
 
@@ -45,10 +58,11 @@ class HomeController extends Controller
         $geocoder->setCountry(config('geocoder.country', 'UK'));
         
         $latlongs = $geocoder->getCoordinatesForAddress($request->postcode);
-      
+    
         if($latlongs['accuracy'] == "result_not_found")
         {
-            return back()->withInput()->withErrors(['postcode.required', 'Please enter a valid UK Postcode']);
+          
+            return redirect()->back()->withInput()->with('postcodeerror','Please enter a valid UK Postcode');
         }
 
         $lat = $latlongs['lat'];
@@ -64,10 +78,53 @@ class HomeController extends Controller
                          ) AS distance', [$lat, $lon, $lat])
         ->havingRaw("distance < ?", [$radius])
         ->where('is_active', 1)
+        ->where('item_type_id', 2)
         ->get();
 
  
         return view('frontend.results',compact('items'));
+
+
+        //$items = Item::filterByRequest($request)->WithDistance()
+    
+    }
+
+    public function helplocal(Request $request){
+  
+        $client = new \GuzzleHttp\Client();
+        $geocoder = new Geocoder($client);
+        
+        $geocoder->setApiKey(config('geocoder.key'));
+
+        $geocoder->setCountry(config('geocoder.country', 'UK'));
+        
+        $latlongs = $geocoder->getCoordinatesForAddress($request->postcode);
+    
+        if($latlongs['accuracy'] == "result_not_found")
+        {
+          
+            return redirect()->back()->withInput()->with('postcodeerror','Please enter a valid UK Postcode');
+        }
+
+        $lat = $latlongs['lat'];
+        $lon = $latlongs['lng'];
+        $radius = $request->radius;
+
+        $items = Item::select('items.*')
+               ->selectRaw('( 3961 * acos( cos( radians(?) ) *
+                           cos( radians( lat ) )
+                           * cos( radians( lon ) - radians(?)
+                           ) + sin( radians(?) ) *
+                           sin( radians( lat ) ) )
+                         ) AS distance', [$lat, $lon, $lat])
+        ->havingRaw("distance < ?", [$radius])
+        ->where('is_active', 1)
+        ->where('item_type_id', 1)
+        ->OrWhere('category_id', $request->category_id)
+        ->get();
+
+        
+        return view('frontend.helpresults',compact('items'));
 
 
         //$items = Item::filterByRequest($request)->WithDistance()
@@ -83,6 +140,32 @@ class HomeController extends Controller
 
     public function contact(){
         return view('frontend.contact');
+    }
+
+    public function contactSend(Request $request){
+
+        $name_contact = $request->name;
+        $email = $request->email;
+        $subject = $request->subject;
+        $message = $request->message;
+
+
+        $objDemo = new \stdClass();
+
+        $objDemo->name = $name_contact;
+        $objDemo->email = $email;
+        $objDemo->subject = $subject;
+        $objDemo->message = $message;
+        $objDemo->sender = "Letshare";
+
+
+        Mail::to($email)->send(new ContactUsMail($objDemo));
+
+        
+    
+        $msg = ["message" => "Thank you. We will be in touch with you shortly"];
+
+        return redirect()->back()->with($msg);
     }
     /**
      * Show the form for creating a new resource.

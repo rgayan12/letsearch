@@ -6,16 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
+use App\ItemType;
+
 use PDO;
 
 class Item extends Model
 {
-    protected $fillable = ['person_name','sharing_product','asking_product','return_expected','phone_number','postcode','is_active','category_id','lat','lon'];
+    protected $fillable = ['person_name','sharing_product','asking_product','return_expected','phone_number','postcode','is_active','category_id','lat','lon','item_type_id','can_afford'];
 
     public function categories(){
         return $this->belongsTo(Category::class);
         }
     //
+    public function type(){
+        return $this->belongsTo(ItemType::class);
+    }
 
     public function scopeFilterByRequest($query, Request $request)
     {
@@ -36,19 +41,23 @@ class Item extends Model
 
     public function getSanitizedPostCodeAttribute(){
         return substr(str_replace(' ','',$this->postcode), 0, 4);
-
     }
+
 
     public function getSanitizedPhoneAttribute(){
         
         $phone = $this->phone_number;
 
         if(substr($phone, 0, 1) === "0"){
+    
             return substr($phone, 1); 
+    
         }
         else{
-           return $phone; 
-        }
+
+                return $phone; 
+    
+            }
 
     }
     public function getUpdatedAskingProductAttribute(){
@@ -56,6 +65,7 @@ class Item extends Model
         if($this->return_expected == 0){
             return "Nothing. Its Free!";
         }
+
         else{
             return $this->asking_product;
         }
