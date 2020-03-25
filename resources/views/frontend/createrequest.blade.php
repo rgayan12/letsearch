@@ -75,7 +75,7 @@
     <div class="col-sm-8">
     <div class="input-group mb-3">
       <div class="input-group-prepend">
-        <span class="input-group-text" id="basic-addon1">+440</span>
+        <span class="input-group-text" id="basic-addon1">+44</span>
       </div>
     <input type="number" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{old('phone_number')}}" placeholder="This is how people will contact you" required>
     @error('phone_number')
