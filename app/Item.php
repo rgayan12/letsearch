@@ -12,7 +12,7 @@ use PDO;
 
 class Item extends Model
 {
-    protected $fillable = ['person_name','sharing_product','asking_product','return_expected','phone_number','postcode','is_active','category_id','lat','lon','item_type_id','can_afford'];
+    protected $fillable = ['person_name','sharing_product','asking_product','return_expected','phone_number','postcode','active','category_id','lat','lon','item_type_id','can_afford'];
 
     public function categories(){
         return $this->belongsTo(Category::class);

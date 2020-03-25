@@ -91,9 +91,14 @@ class ItemController extends Controller
         $item->lat = $latlongs['lat'];
         $item->lon = $latlongs['lng'];
         $item->item_type_id = 2;
-        $item->is_active = 1;
-
         $item->save();
+
+        $deactivateurl = $item->DeactivateUrl;
+            
+        $phone_number = '0044'.$item->SanitizedPhone;
+        
+        
+      //  $this->sendSMS($phone_number, $deactivateurl);
 
         return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
 
@@ -139,9 +144,15 @@ class ItemController extends Controller
         $item->lat = $latlongs['lat'];
         $item->lon = $latlongs['lng'];
         $item->item_type_id = 1;
-        $item->is_active = 1;
-
         $item->save();
+
+
+        $deactivateurl = $item->DeactivateUrl;
+            
+        $phone_number = '0044'.$item->SanitizedPhone;
+        
+        
+      //  $this->sendSMS($phone_number, $deactivateurl);
 
         return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
 
@@ -172,14 +183,14 @@ class ItemController extends Controller
         
         if(Session::has('successmessage'))
         {
-        $item = Item::findOrFail($id);
+      //  $item = Item::findOrFail($id);
         
-        $deactivateurl = $item->DeactivateUrl;
+      //  $deactivateurl = $item->DeactivateUrl;
             
-        $phone_number = '0044'.$item->SanitizedPhone;
+     //   $phone_number = '0044'.$item->SanitizedPhone;
         
         
-        $this->sendSMS($phone_number, $deactivateurl);
+      //  $this->sendSMS($phone_number, $deactivateurl);
 
         return view('frontend.success');
         }
