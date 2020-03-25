@@ -79,6 +79,8 @@ class ItemController extends Controller
        
         $item = Item::create($request->all());
         
+
+        dd($item);
         $latlongs = $this->locate($item->postcode);
 
 
@@ -133,6 +135,9 @@ class ItemController extends Controller
 
         $item = Item::create($request->all());
         
+                dd($item);
+            
+
         $latlongs = $this->locate($item->postcode);
 
         if($latlongs['accuracy'] == "result_not_found" )
@@ -147,9 +152,9 @@ class ItemController extends Controller
         $item->save();
 
 
-        $deactivateurl = $item->DeactivateUrl;
+        $deactivateurl = $item->deactivateUrl;
             
-        $phone_number = '0044'.$item->SanitizedPhone;
+        $phone_number = '0044'.$item->sanitizedPhone;
         
         
         $this->sendSMS($phone_number, $deactivateurl);
@@ -270,11 +275,11 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         //
-        $itemid = $request->input('item');
-        $item = Item::findOrFail($itemid);
+         
+        $item = Item::findOrFail($id);
         $item->active = 0;
         $item->save();
 
