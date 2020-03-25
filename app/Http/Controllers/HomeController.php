@@ -21,17 +21,17 @@ class HomeController extends Controller
     public function index()
     {
         $sharecategories = Category::whereHas('items', function (Builder $query){
-            $query->where('is_active',1);
+            $query->where('active',1);
             $query->where('item_type_id', 1);
         })->get();
 
         $requestcategories = Category::whereHas('items', function (Builder $query){
-            $query->where('is_active',1);
+            $query->where('active',1);
             $query->where('item_type_id', 1);
         })->get();
 
         $allcategories = Category::whereHas('items', function (Builder $query){
-            $query->where('is_active',1);
+            $query->where('active',1);
         })->get();
 
 
@@ -43,7 +43,7 @@ class HomeController extends Controller
 
        // dd($request);
 
-        $items = Item::filterByRequest($request)->where('is_active', 1)->orderBy('created_at')->paginate(10);
+        $items = Item::filterByRequest($request)->where('active', 1)->orderBy('created_at')->paginate(10);
 
         return view('frontend.results',compact('items'));
     }
@@ -77,7 +77,7 @@ class HomeController extends Controller
                            sin( radians( lat ) ) )
                          ) AS distance', [$lat, $lon, $lat])
         ->havingRaw("distance < ?", [$radius])
-        ->where('is_active', 1)
+        ->where('active', 1)
         ->where('item_type_id', 2)
         ->get();
 
@@ -118,7 +118,7 @@ class HomeController extends Controller
                            sin( radians( lat ) ) )
                          ) AS distance', [$lat, $lon, $lat])
         ->havingRaw("distance < ?", [$radius])
-        ->where('is_active', 1)
+        ->where('active', 1)
         ->where('item_type_id', 1)
         ->OrWhere('category_id', $request->category_id)
         ->get();
