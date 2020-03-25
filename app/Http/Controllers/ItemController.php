@@ -275,7 +275,7 @@ class ItemController extends Controller
         //
         $itemid = $request->input('item');
         $item = Item::findOrFail($itemid);
-        $item->is_active = 0;
+        $item->active = 0;
         $item->save();
 
         return redirect()->route('item.deactivated',$item->id)->with('deactivatemessage','Thank you!');
