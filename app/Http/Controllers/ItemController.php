@@ -98,7 +98,7 @@ class ItemController extends Controller
         $phone_number = '0044'.$item->SanitizedPhone;
         
         
-      //  $this->sendSMS($phone_number, $deactivateurl);
+        $this->sendSMS($phone_number, $deactivateurl);
 
         return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
 
@@ -152,7 +152,7 @@ class ItemController extends Controller
         $phone_number = '0044'.$item->SanitizedPhone;
         
         
-      //  $this->sendSMS($phone_number, $deactivateurl);
+        $this->sendSMS($phone_number, $deactivateurl);
 
         return redirect()->route('item.success',$item->id)->with('successmessage','Thank you!');
 
