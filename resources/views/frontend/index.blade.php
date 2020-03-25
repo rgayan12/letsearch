@@ -37,6 +37,7 @@
         <h2 class="sub-heading mt-4"><u>{{ $category->name }}</u></h2>
 
         <div class="row">
+      
             @foreach($category->items as $item)
                 @if($item->item_type_id == 1)
                         @include('frontend.partials.request')

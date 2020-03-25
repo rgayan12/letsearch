@@ -21,19 +21,19 @@ class HomeController extends Controller
     public function index()
     {
         $sharecategories = Category::whereHas('items', function (Builder $query){
-            $query->where('active',1);
             $query->where('item_type_id', 1);
         })->get();
 
         $requestcategories = Category::whereHas('items', function (Builder $query){
-            $query->where('active',1);
+      
             $query->where('item_type_id', 1);
         })->get();
 
-        $allcategories = Category::whereHas('items', function (Builder $query){
-            $query->where('active',1);
+        $allcategories = Category::whereHas('items', function (Builder $q){
+            $q->where('active','=',1);
         })->get();
-
+        
+ 
 
         return view('frontend.index',compact('sharecategories','requestcategories','allcategories'));
         //

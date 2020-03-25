@@ -49,7 +49,7 @@
             <div class="col-md-6">
             <div class="contact-us-content p-4">
                     <h1 class="contact-us-header">Or Email us at</h1>
-                    <p class="lead">hello@letshare.uk</p>
+                    <p class="lead">bastiyan@blymo.co.uk</p>
 
                     <h2>If you are a authorised representative of an institution that would like to help people please get in touch and we will arrange the best we can ASAP</h2>
                     <!--

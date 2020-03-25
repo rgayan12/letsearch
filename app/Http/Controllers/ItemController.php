@@ -76,11 +76,9 @@ class ItemController extends Controller
         ]);
 
      
-       
+        
         $item = Item::create($request->all());
         
-
-        dd($item);
         $latlongs = $this->locate($item->postcode);
 
 
@@ -95,9 +93,9 @@ class ItemController extends Controller
         $item->item_type_id = 2;
         $item->save();
 
-        $deactivateurl = $item->deactivateUrl;
+        $deactivateurl = $item->DeactivateUrl;
             
-        $phone_number = '0044'.$item->sanitizedPhone;
+        $phone_number = '0044'.$item->SanitizedPhone;
         
         
         $this->sendSMS($phone_number, $deactivateurl);
@@ -135,9 +133,6 @@ class ItemController extends Controller
 
         $item = Item::create($request->all());
         
-                dd($item);
-            
-
         $latlongs = $this->locate($item->postcode);
 
         if($latlongs['accuracy'] == "result_not_found" )
@@ -278,12 +273,23 @@ class ItemController extends Controller
     public function destroy($id)
     {
         //
-         
+        
         $item = Item::findOrFail($id);
         $item->active = 0;
-        $item->save();
+        $item->update();
 
         return redirect()->route('item.deactivated',$item->id)->with('deactivatemessage','Thank you!');
 
+    }
+
+    public function deactivate(Request $request){
+
+        $itemid = $request->input('item');
+        $item = Item::findOrFail($itemid);
+        $verified = true;
+
+        return view('frontend.deactivate',compact('item','verified'));
+        
+                
     }
 }

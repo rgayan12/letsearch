@@ -33,7 +33,9 @@ Route::get('search/refine','HomeController@refine')->name('refine-search');
 Route::get('search/help/local','HomeController@helplocal')->name('helplocal');
 
 
-Route::get('deactivate/{item}','ItemController@destroy')->name('deactivate')->middleware('signed');
+Route::get('deactivate','ItemController@deactivate')->name('deactivate');
+
+
 Route::get('howitworks','HomeController@howitworks')->name('howitworks');
 Route::get('terms','HomeController@terms')->name('terms');
 Route::get('contact','HomeController@contact')->name('contact');
