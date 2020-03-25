@@ -10,7 +10,7 @@
                 <p class="card-text">{{ $item->sharing_product ?? '' }}</p>
                 <h5 class="card-title"><strong>Need</strong></h5>
                 <p class="card-text"> {{ $item->updatedAskingProduct ?? '' }}</p>
-                {{$item->deactivateUrl}}
+              
                 <h5 class="card-title"><strong>Location : </strong> {{ $item->SanitizedPostCode ?? '' }}</h5>
 
                  

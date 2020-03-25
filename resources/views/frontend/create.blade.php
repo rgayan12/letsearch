@@ -113,6 +113,16 @@
       </div>
     </div>
   </fieldset>
+
+  <div class="form-group">
+    <div class="row">
+      <label for="terms" class="col-sm-4 col-form-label">I've read the <a target = "_blank" href="{{route('terms')}}">terms</a></label>
+      <div class="col-sm-8 text-center">
+      <input class="form-check-input" required type="checkbox" id="gridCheck">
+      </div>
+    </div>
+  </div>
+ 
   <div class="form-group row">
   <div class="alert alert-info" role="alert">
     <p>Please note that once you submit this form you will get a text message with a link to remove the item from the platform</p>

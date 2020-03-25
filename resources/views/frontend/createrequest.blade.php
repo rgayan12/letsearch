@@ -3,21 +3,58 @@
 <div class="container mt-4">
     <div class="row h-100">
      
-    <!--
+
       <div class="col-md-12  mt-xl-5 col-xl-5">
             <h1 class="heading-text">How it works </h1> 
             <div class="d-none d-lg-block">
-              @include('frontend.howitworks')
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h2 class="card-title">Add Item</h2>
+            <p class="card-text">Add the item/good you wish to request. </p> 
+            <p>You will receive a text message with a cancellation link to remove the item. </p>
+            <p class="card-text lead">Make sure to let people know if you can pay.</p> 
+
+        </div>
+        </div>
+
+
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h2 class="card-title">Someone in your area or an Organisation can find what you looking for</h2>
+            <p class="card-text">Another person can find the item they are looking for. </p>
+            <p> We will not display your full postcode anywhere on the site to increase the security. </p> 
+            <p>They will Contact you via phone number you provided.</p>
+            <p>Let's not get too close to prevent spreading COVID-19. Let’s help each other. </p>
+        </div>
+        </div>
+
+
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h2 class="card-title">Remove the Item</h2>
+            <p class="card-text">Once the item/good has been recieved, click on the cancellation link to remove the item/good listed</p>
+        </div>
+        </div>
+        
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+ 
+            <h2 class="card-title">That's really It! </h2>
+            <p> Let's continue this with each other and make this world a better place.</p>
+    
+        </div>
+        </div>
             </div>
             <div class="d-block d-lg-none mb-3 text-center">
               <a class="btn btn-lg btn-success" href="{{route('howitworks')}}">Click here to Learn more</a>
             </div>
         </div>
-    -->
+
     
     <div class="col-md-12 col-xl-7 mt-xl-5">
  
     <h1 class="heading-text">Your Request</h1> 
+    <p class="lead">
       
     <form action="{{route('requestitemstore')}}" method="post">
     @csrf
@@ -113,7 +150,15 @@
     </div>
   </fieldset>
 
-
+  <div class="form-group">
+    <div class="row">
+      <label for="terms" class="col-sm-4 col-form-label">I've read the <a target = "_blank" href="{{route('terms')}}">terms</a></label>
+      <div class="col-sm-8 text-center">
+      <input class="form-check-input" required type="checkbox" id="gridCheck">
+      </div>
+    </div>
+  </div>
+ 
   <div class="form-group row">
   <div class="alert alert-info" role="alert">
     <p>Please note that once you submit this form you will get a text message with a link to remove the item from the platform</p>

@@ -1,7 +1,11 @@
 @extends('frontend.base.layout')
 @section('content')
 <div class="container mt-4 mb-3">
-
+<div class="alert alert-info" role="alert">
+    <p>Letshare is a platform that can connect people together with little things. For any reason if you can't get out of the house you can simply request an item and someone / organisation in your area can provide that to you</p>
+    <p>Also if there's something that you don't need you can share it and get something in return. If you feeling generous you can share it for free</p>
+    <p>Go on and explore. We really hope you will enjoy this specially during these difficult times. Please do <a href="{{ route('contact') }}"> contact us </a> if you would like to know more </p>
+</div>
 <div class="row">
          <div class="col-md-12">
             <div class="category-block" id="searchbox">
