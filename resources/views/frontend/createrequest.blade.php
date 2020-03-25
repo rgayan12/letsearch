@@ -120,6 +120,8 @@
     <p>Also note that you cant make edits to the item once you publish it. You will have to click on the link and remove the product then create a new one. So double check before hitting the below button :) </p>
   </div>
   </div>
+  <input type="hidden" name="active" value="1">
+
    <div class="form-group row">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-lg btn-success">Request</button>

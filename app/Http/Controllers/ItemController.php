@@ -76,7 +76,7 @@ class ItemController extends Controller
         ]);
 
      
-
+       
         $item = Item::create($request->all());
         
         $latlongs = $this->locate($item->postcode);
@@ -93,9 +93,9 @@ class ItemController extends Controller
         $item->item_type_id = 2;
         $item->save();
 
-        $deactivateurl = $item->DeactivateUrl;
+        $deactivateurl = $item->deactivateUrl;
             
-        $phone_number = '0044'.$item->SanitizedPhone;
+        $phone_number = '0044'.$item->sanitizedPhone;
         
         
         $this->sendSMS($phone_number, $deactivateurl);
