@@ -43,7 +43,7 @@ class HomeController extends Controller
 
        // dd($request);
 
-        $items = Item::filterByRequest($request)->where('active', 1)->orderBy('created_at')->paginate(10);
+        $items = Item::filterByRequest($request)->where('active', 1)->where('item_type_id', 2)->orderBy('created_at')->paginate(10);
 
         return view('frontend.results',compact('items'));
     }
